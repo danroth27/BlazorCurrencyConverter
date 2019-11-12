@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+option csharp_namespace = "CurrencyExchangeRateService";
+
+package currency_exchange_rate;
+
+service CurrencyExchangeRate {
+	rpc GetExchangeRate (ExchangeRateRequest) returns (ExchangeRateReply);
+	rpc GetCurrencies (CurrenciesRequest) returns (CurrenciesReply);
+}
+
+message ExchangeRateRequest {
+	string currency_type_from = 1;
+	string currency_type_to = 2;
+}
+
+message ExchangeRateReply {
+	double exchange_rate = 1;
+}
+
+message CurrenciesRequest {
+}
+
+message CurrenciesReply {
+	repeated string currencies = 1;
+}

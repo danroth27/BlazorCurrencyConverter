@@ -1,0 +1,44 @@
+﻿@inject ICurrencyExchangeRate CurrencyExchangeRateClient
+
+<h1>Currency converter</h1>
+
+<input type="number" min="0" @bind="fromValue" />
+<select @bind="fromCurrency">
+    @foreach (var currency in currencies)
+    {
+        <option selected="@(currency == fromCurrency)">@currency</option>
+    }
+</select>
+=
+@toValue
+<select @bind="toCurrency">
+    @foreach (var currency in currencies)
+    {
+        <option selected="@(currency == toCurrency)">@currency</option>
+    }
+</select>
+
+<button class="btn btn-primary" @onclick="Convert">Convert</button>
+
+@code {
+    IEnumerable<String> currencies = Array.Empty<string>();
+    decimal fromValue = 1;
+    string fromCurrency;
+    decimal toValue;
+    string toCurrency;
+
+    protected override async Task OnInitializedAsync()
+    {
+        currencies = await CurrencyExchangeRateClient.GetCurrencies();
+        fromCurrency = "USD";
+        toCurrency = currencies.First();
+        await Convert();
+    }
+
+    async Task Convert()
+    {
+        decimal rate = await CurrencyExchangeRateClient.GetRate(fromCurrency, toCurrency);
+        toValue = rate * fromValue;
+    }
+}
+
